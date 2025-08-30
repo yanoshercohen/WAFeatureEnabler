@@ -19,27 +19,16 @@ Script that enables all AB features in WhatsApp Web.
 4. Paste the script.
 ```js
 const features = {};
-const getABPropConfigValue = require('WAWebABProps').getABPropConfigValue;
-console.log("FeatureName\t\t\t\tOriginal Value\t\t\t\tnew Value");
-require('WAWebABProps').getABPropConfigValue = function(featureName) {
-    const retVal = getABPropConfigValue(featureName);
-    let newValue = retVal;
-    const featureList = [
-        "edit", "community", "web", "username",
-        "report", "receive", "wab", "view",
-        "enabled", "system", "include", "additional",
-        "enable", "privacy", "server", "message",
-        "reaction", "meta"
-        /*, "feature name" ...*/
-    ];
+const orig = require('WAWebABProps').getABPropConfigValue;
+console.log("FeatureName\t\t\t\tOriginal Value\t\t\t\tNew Value");
 
-    if (featureList.some((element) => featureName.includes(element))) {
-            newValue = true;
-    }
-    if (features[featureName] === undefined) {
-        console.log(`[+] ${featureName.padEnd(30)} ${retVal.toString().padEnd(30)} ${newValue.toString()}`);
-    }
-    features[featureName] = retVal;
-    return newValue;
-}
+require('WAWebABProps').getABPropConfigValue = f => {
+    const ret = orig(f);
+    const list = ["is_meta_employee_or_internal_tester","biz_ai_smb_agents_automatic_reply_enabled", "username_contact_display", "username_contact_display", "lists_feature_enabled" ,"files_media_hub_web" ,"animated_race_mercedes_car_emoji_enabled", "custom_racing_emoji_feb2025", "search_the_web_url_offer", "search_the_web_text_search", "username", "ai"];
+    const val = (list.some(e => f.includes(e)) && ret === false) ? true : ret;
+    if (features[f] === undefined) console.log(`[+] ${f.padEnd(30)} ${String(ret).padEnd(30)} ${val}`);
+    features[f] = ret;
+    return val;
+};
+
 ```
